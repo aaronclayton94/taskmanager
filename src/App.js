@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
+import TasksPage from "./components/TasksPage";
+import { editTask, createTask, removeTask } from "./actions";
+import Navbar from "./components/Navbar"
 
-function App() {
+
+function App(props) {
+  const onStatusChange = (id, status) => {
+    props.dispatch(editTask(id, { status }));
+  };
+
+  const onCreateTask = ({ title, description }) => {
+    props.dispatch(createTask({ title, description }));
+  };
+
+  const onRemoveTask = (id) => {
+    props.dispatch(removeTask(id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <TasksPage
+        tasks={props.tasks}
+        onStatusChange={onStatusChange}
+        onCreateTask={onCreateTask}
+        onRemoveTask={onRemoveTask}
+      />
+    </>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    tasks: state.tasks,
+  };
+};
+
+export default connect(mapStateToProps)(App);
